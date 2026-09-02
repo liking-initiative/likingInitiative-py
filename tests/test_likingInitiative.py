@@ -64,7 +64,9 @@ def test_dataset_listing_exposes_scale_and_phases(L):
     # (subject_id, item_id) is not a unique key, and a user who assumes it is
     # gets silent duplicates.
     repeated = set(ds.filter(pl.col("n_timepoints") > 1)["dataset_code"])
-    assert repeated == {"chenhol1", "chenhol2", "crosswebb", "hamesmcc", "leehare2023exp2", "leeholyoak2021"}
+    assert repeated == {
+        "chenhol1", "chenhol2", "crosswebb", "hamesmcc", "leehare2023exp2", "leeholyoak2021",
+    }
 
 
 # -- get_dataset -----------------------------------------------------------
