@@ -27,17 +27,17 @@ Two things to get right:
 * **Subject ids are unique only within a dataset.** Subject "12" in two
   datasets is two different people; key on ``(dataset_code, subject_id)``.
 """
+from .catalog import list_datasets, list_items, list_studies, release_info
+from .citation import bibtex, cite
+from .database import load_database
+from .dataset import Dataset, get_dataset
+from .item import Item, get_item
 from .release import (
     LikingInitiativeError,
     cache_info,
     clear_cache,
     resolve_version,
 )
-from .catalog import list_datasets, list_items, list_studies, release_info
-from .dataset import Dataset, get_dataset
-from .item import Item, get_item
-from .database import load_database
-from .citation import bibtex, cite
 
 __all__ = [
     "list_studies",

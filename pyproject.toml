@@ -51,5 +51,14 @@ likingInitiative = ["py.typed"]
 line-length = 100
 target-version = "py39"
 
+[tool.ruff.lint]
+# Pinned explicitly so a newer ruff on CI cannot widen the rule set. The
+# package is deliberately camelCase (it matches the R package), so
+# pep8-naming's module-name rule is not selected.
+select = ["E", "F", "W", "I"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["likingInitiative"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]

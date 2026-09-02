@@ -5,8 +5,8 @@ from typing import Any, Dict, List
 
 import polars as pl
 
-from .release import LikingInitiativeError, load_catalog
 from .database import load_database
+from .release import LikingInitiativeError, load_catalog
 
 
 class Item:
