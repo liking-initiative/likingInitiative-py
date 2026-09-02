@@ -1,0 +1,96 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+env:
+  RELEASE_VERSION: "1.6.2"
+
+jobs:
+  release:
+    name: Mirror the release from Zenodo
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - id: cache
+        uses: actions/cache@v4
+        with:
+          path: release
+          key: zenodo-release-${{ env.RELEASE_VERSION }}
+      - if: steps.cache.outputs.cache-hit != 'true'
+        run: python .github/scripts/fetch_release.py "$RELEASE_VERSION" release
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release
+          path: release
+          retention-days: 1
+
+  test:
+    name: Test (${{ matrix.os }}, Python ${{ matrix.python }})
+    needs: release
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        python: ["3.9", "3.11", "3.13"]
+        include:
+          - os: macos-latest
+            python: "3.12"
+          - os: windows-latest
+            python: "3.12"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+      - uses: actions/download-artifact@v4
+        with:
+          name: release
+          path: release
+      - run: pip install -e ".[dev]"
+      - run: ruff check .
+      - name: The suite must run, not skip
+        shell: bash
+        run: test -f release/catalog.json
+      - run: python -m pytest -q
+        env:
+          LIKING_INITIATIVE_RELEASE_DIR: ${{ github.workspace }}/release
+          LIKING_INITIATIVE_CACHE_DIR: ${{ runner.temp }}/likingInitiative-cache
+
+  build:
+    name: Build and install the wheel
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install build twine
+      - run: python -m build
+      - run: python -m twine check dist/*
+      - name: Install the wheel in a clean environment
+        run: |
+          python -m venv "$RUNNER_TEMP/clean"
+          "$RUNNER_TEMP/clean/bin/pip" install --quiet dist/*.whl
+          "$RUNNER_TEMP/clean/bin/python" -c "import likingInitiative as L; print(L.__version__, L.cite())"
+
+  zenodo:
+    name: Real Zenodo path
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install .
+      - run: python .github/scripts/zenodo_smoke.py
+        env:
+          LIKING_INITIATIVE_CACHE_DIR: ${{ runner.temp }}/likingInitiative-cache
