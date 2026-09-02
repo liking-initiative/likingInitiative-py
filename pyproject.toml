@@ -27,8 +27,8 @@ dependencies = [
 dev = ["pytest>=7"]
 
 [project.urls]
-Homepage = "https://github.com/kiante-fernandez/liking-rating-database"
-Source = "https://github.com/kiante-fernandez/liking-rating-database"
+Homepage = "https://github.com/liking-initiative/likingInitiative-python"
+Source = "https://github.com/liking-initiative/likingInitiative-python"
 
 [tool.setuptools.packages.find]
 where = ["src"]
