@@ -9,7 +9,7 @@ published decision-making studies, as [polars](https://pola.rs) frames.
 ## Install
 
 ```bash
-pip install git+https://github.com/liking-initiative/likingInitiative-py
+pip install likingInitiative
 ```
 
 Requires Python 3.9 or newer. Data is downloaded from Zenodo on first use and
