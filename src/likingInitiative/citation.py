@@ -9,9 +9,10 @@ from typing import Any, Optional
 DATABASE_DOI = "10.5281/zenodo.22216442"
 
 DATABASE_CITATION = (
-    "Fernandez, K., Goyal, S., & Krajbich, I. (2026). The Liking Initiative: a "
-    "database of subjective evaluation ratings for decision-making research "
-    "[Data set]. Zenodo. https://doi.org/" + DATABASE_DOI
+    "Fernandez, K., Goyal, S., & Krajbich, I. (2026). A database of subjective "
+    "evaluation ratings for decision-making research. Retrieved from "
+    "https://osf.io/preprints/psyarxiv/af2nr_v1\n"
+    "Data: https://doi.org/" + DATABASE_DOI
 )
 
 
